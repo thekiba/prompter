@@ -1,6 +1,6 @@
 # Prompter
 
-[🔗See it in action](https://pepelsbey.github.io/prompter/)
+[See it in action](https://pepelsbey.github.io/prompter/)
 
 <img src="images/icon.png" width="128" height="128" alt="">
 
