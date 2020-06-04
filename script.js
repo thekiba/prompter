@@ -96,13 +96,10 @@
         } else {
             switch (event.key) {
                 case ' ':
-                case 'ArrowRight':
-                case 'UIKeyInputRightArrow':
                     event.preventDefault();
                     toggle();
                 break;
-                case 'ArrowLeft':
-                case 'UIKeyInputLeftArrow':
+                case 'h':
                     event.preventDefault();
                     pause();
                     rewind();
@@ -128,5 +125,6 @@
     });
 
     document.addEventListener('touchstart', toggle);
+    document.addEventListener('DOMContentLoaded', rewind);
 
 }());
