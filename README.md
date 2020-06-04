@@ -1,5 +1,9 @@
 # Prompter
 
+[🔗See it in action](https://pepelsbey.github.io/prompter/)
+
+<img src="images/icon.png" width="128" height="128" alt="">
+
 Node.js and npm are required for prompter to work.
 
 1. Clone repository or download the [archive](https://github.com/pepelsbey/prompter/archive/master.zip)
