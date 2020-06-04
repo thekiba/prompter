@@ -1,10 +1,9 @@
 {
   "private": true,
   "dependencies": {
-    "browser-sync": "^2.18.8",
-    "gulp": "^3.9.1"
+    "browser-sync": "^2.26.7"
   },
   "scripts": {
-    "start": "gulp"
+    "start": "browser-sync --no-notify --no-ui --watch 'index.html'"
   }
 }

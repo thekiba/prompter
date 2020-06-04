@@ -2,7 +2,7 @@
 
 .prompt {
     font-size: calc(var(--size) * 1vw);
-    }
+}
 
 /* Application */
 
@@ -12,7 +12,7 @@
     color: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.2rem;
-    }
+}
 
 /* Focus */
 .prompt__focus {
@@ -22,7 +22,7 @@
     width: 100%;
     height: 1.2rem;
     background: rgba(255, 255, 255, 0.4);
-    }
+}
 
 /* Content */
 
@@ -31,14 +31,15 @@
     -webkit-hyphens: auto;
     hyphens: auto;
     transform: scaleY(-1);
-    }
+}
 
 /* Paragraphs */
 
 .prompt__content p {
     margin-top: 0;
     margin-bottom: 0;
-    }
+}
+
 .prompt__content p + p {
     margin-top: 1.2rem;
-    }
+}
