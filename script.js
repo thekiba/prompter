@@ -1,44 +1,46 @@
 (function() {
 
-    var fullScreenElement = document.fullScreenElement ||
+    const fullScreenElement = document.fullScreenElement ||
         document.webkitFullscreenElement ||
         document.mozFullScreenElement ||
         document.msFullscreenElement;
 
-    var exitFullscreenFn = document.exitFullscreen ||
+    const exitFullscreenFn = document.exitFullscreen ||
         document.webkitExitFullscreen ||
         document.mozCancelFullscreen ||
         document.msExitFullscreen;
 
-    var requestFullscreenFn = Element.prototype.requestFullscreen ||
+    const requestFullscreenFn = Element.prototype.requestFullscreen ||
         Element.prototype.webkitRequestFullscreen ||
         Element.prototype.mozRequestFullScreen ||
         Element.prototype.msRequestFullscreen;
 
 
-    var prompt = document.querySelector('.prompt');
+    const prompt = document.querySelector('.prompt');
 
-    var animationLoop;
-    var scrollingNow = false;
+    let animationLoop;
+    let scrollingNow = false;
 
-    var scrollStep = 3;
-    var defaultSpeed = 30;
-    var minimumSpeed = 10;
-    var maximumSpeed = 60;
-    var stepSpeed = 10;
+    const scrollStep = 3;
+    const startSpeed = 1.8;
+    let defaultSpeed = startSpeed;
+    const minimumSpeed = 0.1;
+    const maximumSpeed = 60;
+    const stepSpeed = 0.1;
+    const speechRecognitionLang = 'ru-RU';
 
     function renderRequest() {
         window.requestAnimationFrame(render);
     }
 
     function render() {
-        window.scrollBy(0, -scrollStep);
+        window.scrollBy(0, +(scrollStep * defaultSpeed));
         scroll();
     }
 
     function scroll() {
         if (window.scrollY && scrollingNow) {
-            animationLoop = setTimeout(renderRequest, 1000 / defaultSpeed);
+            animationLoop = setTimeout(renderRequest, 16);
         }
     }
 
@@ -126,5 +128,76 @@
 
     document.addEventListener('touchstart', toggle);
     document.addEventListener('DOMContentLoaded', rewind);
+
+    let textPromtsNow = '';
+    const intersectedElements = new Set();
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            const element = entry.target;
+
+            return entry.isIntersecting
+                ? intersectedElements.add(element)
+                : intersectedElements.delete(element);
+        });
+
+        textPromtsNow = Array.from(intersectedElements).map(e => e.innerText).join(' ');
+        console.log(textPromtsNow);
+    });
+
+    const elements = document.getElementsByTagName('p');
+    Array.from(elements).forEach(element => {
+        observer.observe(element);
+    });
+
+    const SpeechRecognition = 'SpeechRecognition' in window
+        ? window.SpeechRecognition
+        : window.webkitSpeechRecognition;
+
+    let recognition;
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = speechRecognitionLang;
+        recognition.continuous = true;
+        recognition.interimResults = true;
+    }
+
+    if (SpeechRecognition) {
+        recognition.addEventListener("result", event => {
+            if (typeof event.results === "undefined") return;
+            const transcript = event.results[event.results.length - 1][0].transcript
+                .toLowerCase()
+                .trim();
+
+            console.log({
+                transcript,
+                textPromtsNow,
+                compareTwoStrings: compareTwoStrings(textPromtsNow, transcript)
+            });
+
+            const similar = compareTwoStrings(textPromtsNow, transcript);
+            if (similar > 0.18) {
+                if (!scrollingNow) {
+                    toggle();
+                }
+            }
+
+            if (similar < 0.04) {
+                if (scrollingNow) {
+                    toggle();
+                }
+            }
+        });
+    }
+
+    if (SpeechRecognition) {
+        recognition.start();
+        recognition.onend = () => {
+            console.log('рестарт', recognition);
+            recognition.abort()
+            setTimeout(() => {
+                recognition.start()
+            });
+        }
+    }
 
 }());
